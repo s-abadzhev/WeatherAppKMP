@@ -1,0 +1,54 @@
+<resources>
+    <string name="app_name">WeatherAppKMP</string>
+
+    <!-- Weather conditions -->
+    <string name="condition_clear_sky">Clear Sky</string>
+    <string name="condition_partly_cloudy">Partly Cloudy</string>
+    <string name="condition_overcast">Overcast</string>
+    <string name="condition_fog">Fog</string>
+    <string name="condition_drizzle">Drizzle</string>
+    <string name="condition_rain">Rain</string>
+    <string name="condition_snowfall">Snowfall</string>
+    <string name="condition_thunderstorm">Thunderstorm</string>
+
+    <!-- Forecast -->
+    <string name="forecast_hourly">Hourly Forecast</string>
+    <string name="forecast_daily">7-Day Forecast</string>
+    <string name="forecast_today">Today</string>
+    <string name="forecast_tomorrow">Tomorrow</string>
+
+    <!-- Details -->
+    <string name="details_humidity">Humidity</string>
+    <string name="details_wind">Wind</string>
+    <string name="details_uv_index">UV Index</string>
+    <string name="details_visibility">Visibility</string>
+    <string name="details_feels_like">Feels like %1$s</string>
+
+    <!-- UV -->
+    <string name="uv_low">Low</string>
+    <string name="uv_moderate">Moderate</string>
+    <string name="uv_high">High</string>
+    <string name="uv_very_high">Very High</string>
+    <string name="uv_extreme">Extreme</string>
+
+    <!-- Search -->
+    <string name="search_placeholder">Search city…</string>
+    <string name="search_cancel">Cancel</string>
+    <string name="search_saved_cities">Saved Cities</string>
+    <string name="search_not_found">City not found</string>
+    <string name="search_start_typing">Start typing a city name</string>
+
+    <!-- Error -->
+    <string name="error_retry">Retry</string>
+    <string name="error_permission_denied">Location permission denied. Please enable it in Settings.</string>
+    <string name="error_unavailable">Unable to determine location.</string>
+    <string name="error_timeout">Location request timed out.</string>
+    <string name="wind_speed">%1$s m/s</string>
+
+    <!-- Location -->
+    <string name="my_location">My Location</string>
+    <string name="location_unknown">Unknown</string>
+
+    <!-- Loading -->
+    <string name="loading_weather">Loading weather…</string>
+</resources>
