@@ -2,6 +2,7 @@ package ru.sergeyabadzhev.weatherappkmp.core.location
 
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.CoreLocation.CLGeocoder
@@ -15,6 +16,7 @@ actual class GeocoderService {
     private val geocoder = CLGeocoder()
 
     @OptIn(ExperimentalCoroutinesApi::class)
+    @Throws(LocationError::class, CancellationException::class)
     actual suspend fun reverseGeocode(lat: Double, lon: Double): City {
         return suspendCancellableCoroutine { continuation ->
             val location = CLLocation(latitude = lat, longitude = lon)
@@ -42,6 +44,7 @@ actual class GeocoderService {
     }
 
     @OptIn(ExperimentalForeignApi::class)
+    @Throws(LocationError::class, CancellationException::class)
     actual suspend fun searchCity(query: String): List<City> {
         return suspendCancellableCoroutine { continuation ->
             geocoder.geocodeAddressString(query) { placemarks, error ->

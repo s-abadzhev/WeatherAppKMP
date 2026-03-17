@@ -2,6 +2,7 @@ package ru.sergeyabadzhev.weatherappkmp.core.location
 
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.CoreLocation.CLLocation
 import platform.CoreLocation.CLLocationManager
@@ -17,6 +18,7 @@ import kotlin.coroutines.resumeWithException
 actual class LocationProvider {
 
     @OptIn(ExperimentalForeignApi::class)
+    @Throws(LocationError::class, CancellationException::class)
     actual suspend fun getCurrentLocation(): Coordinates {
         return suspendCancellableCoroutine { continuation ->
             val delegate = LocationDelegate(

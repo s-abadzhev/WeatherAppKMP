@@ -50,7 +50,6 @@ class HomeViewModel(
             _state.update { it.copy(isLoading = true) }
             when (val last = locationPreferences.getLastLocation()) {
                 is LastLocation.DeviceLocation -> {
-                    // Сигнализируем UI что нужна геолокация
                     _state.update {
                         it.copy(
                             isUsingDeviceLocation = true,
@@ -60,7 +59,6 @@ class HomeViewModel(
                     }
                 }
                 is LastLocation.SelectedCity -> {
-                    // Сразу грузим город — геолокация не нужна
                     _state.update {
                         it.copy(
                             isUsingDeviceLocation = false,
@@ -73,11 +71,9 @@ class HomeViewModel(
         }
     }
 
-    // Вызывается из HomeScreen после проверки разрешений
     private var locationJob: Job? = null
 
     fun onLocationPermissionGranted() {
-        // Сбрасываем флаг сразу — больше не нужен
         _state.update { it.copy(needsLocationUpdate = false) }
 
         locationJob?.cancel()
@@ -137,7 +133,7 @@ class HomeViewModel(
                 weather = null,
                 error = null,
                 isLoading = false,
-                needsLocationUpdate = true // явно запрашиваем геолокацию
+                needsLocationUpdate = true
             )
         }
         viewModelScope.launch {

@@ -23,7 +23,6 @@ fun AppNavigation() {
     val navController = rememberNavController()
     val context = LocalContext.current
 
-    // HomeViewModel живёт на уровне NavHost — переживает навигацию между экранами
     val homeViewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory(context))
 
     NavHost(navController = navController, startDestination = Screen.Home.route) {

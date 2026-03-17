@@ -6,11 +6,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ru.sergeyabadzhev.weatherappkmp.domain.model.City
 import java.util.Locale
+import kotlin.coroutines.cancellation.CancellationException
 
 actual class GeocoderService(private val context: Context) {
 
     private val geocoder = Geocoder(context, Locale.getDefault())
 
+    @Throws(LocationError::class, CancellationException::class)
     actual suspend fun reverseGeocode(lat: Double, lon: Double): City {
         return withContext(Dispatchers.IO) {
             try {
@@ -33,6 +35,7 @@ actual class GeocoderService(private val context: Context) {
         }
     }
 
+    @Throws(LocationError::class, CancellationException::class)
     actual suspend fun searchCity(query: String): List<City> {
         return withContext(Dispatchers.IO) {
             try {

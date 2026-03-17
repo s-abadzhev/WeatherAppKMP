@@ -32,7 +32,6 @@ class SearchViewModel(
     private var searchJob: Job? = null
 
     init {
-        // Подписываемся на сохранённые города из DataStore
         viewModelScope.launch {
             cityStorage.savedCities.collect { cities ->
                 _state.update { it.copy(savedCities = cities) }

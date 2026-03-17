@@ -1,6 +1,6 @@
 package ru.sergeyabadzhev.weatherappkmp.domain.model
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 data class HourlyForecast(
     val date: Instant,

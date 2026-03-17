@@ -79,12 +79,10 @@ fun HomeScreen(
         }
     }
 
-    // Запускаем onAppear один раз
     LaunchedEffect(Unit) {
         viewModel.onAppear()
     }
 
-    // Реагируем на запрос геолокации
     LaunchedEffect(state.needsLocationUpdate) {
         if (state.needsLocationUpdate) {
             val granted = ContextCompat.checkSelfPermission(

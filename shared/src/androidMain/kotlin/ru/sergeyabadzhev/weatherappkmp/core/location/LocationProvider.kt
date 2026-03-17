@@ -8,6 +8,7 @@ import com.google.android.gms.tasks.CancellationTokenSource
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeout
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -16,6 +17,7 @@ actual class LocationProvider(private val context: Context) {
 
     private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
+    @Throws(LocationError::class, CancellationException::class)
     @SuppressLint("MissingPermission")
     actual suspend fun getCurrentLocation(): Coordinates {
         try {
