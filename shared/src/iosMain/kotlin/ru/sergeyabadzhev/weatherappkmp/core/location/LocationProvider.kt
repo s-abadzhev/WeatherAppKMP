@@ -15,11 +15,11 @@ import platform.darwin.NSObject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-actual class LocationProvider {
+actual class LocationProvider : LocationProviderInterface {
 
     @OptIn(ExperimentalForeignApi::class)
     @Throws(LocationError::class, CancellationException::class)
-    actual suspend fun getCurrentLocation(): Coordinates {
+    actual override suspend fun getCurrentLocation(): Coordinates {
         return suspendCancellableCoroutine { continuation ->
             val delegate = LocationDelegate(
                 onLocation = { location ->

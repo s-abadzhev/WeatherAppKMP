@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.koin.compiler)
 }
 
 kotlin {
@@ -34,6 +35,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.koin.core)
+            implementation(libs.koin.core.viewmodel)
         }
         androidMain.dependencies {
             implementation(libs.ktor.client.android)
@@ -45,6 +47,7 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
         }
     }
 }

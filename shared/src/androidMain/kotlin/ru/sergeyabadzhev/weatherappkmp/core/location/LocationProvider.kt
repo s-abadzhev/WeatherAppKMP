@@ -13,13 +13,13 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 
-actual class LocationProvider(private val context: Context) {
+actual class LocationProvider(private val context: Context) : LocationProviderInterface {
 
     private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
     @Throws(LocationError::class, CancellationException::class)
     @SuppressLint("MissingPermission")
-    actual suspend fun getCurrentLocation(): Coordinates {
+    actual override suspend fun getCurrentLocation(): Coordinates {
         try {
             return withTimeout(10_000) {
                 val lastLocation = getLastLocation()

@@ -2,7 +2,7 @@ package ru.sergeyabadzhev.weatherappkmp.core.location
 
 import kotlinx.coroutines.CancellationException
 
-expect class LocationProvider : LocationProviderInterface {
+interface LocationProviderInterface {
     @Throws(LocationError::class, CancellationException::class)
-    override suspend fun getCurrentLocation(): Coordinates
+    suspend fun getCurrentLocation(): Coordinates
 }

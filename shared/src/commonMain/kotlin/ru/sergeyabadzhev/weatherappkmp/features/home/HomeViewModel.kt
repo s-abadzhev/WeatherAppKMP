@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.sergeyabadzhev.weatherappkmp.core.location.LocationError
-import ru.sergeyabadzhev.weatherappkmp.core.location.LocationProvider
+import ru.sergeyabadzhev.weatherappkmp.core.location.LocationProviderInterface
 import ru.sergeyabadzhev.weatherappkmp.core.storage.LastLocation
 import ru.sergeyabadzhev.weatherappkmp.core.storage.LocationPreferencesInterface
 import ru.sergeyabadzhev.weatherappkmp.domain.model.City
@@ -39,7 +39,7 @@ data class HomeState(
 
 class HomeViewModel(
     private val weatherRepository: WeatherRepository,
-    private val locationProvider: LocationProvider,
+    private val locationProvider: LocationProviderInterface,
     private val locationPreferences: LocationPreferencesInterface
 ) : ViewModel() {
 
