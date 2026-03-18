@@ -1,13 +1,10 @@
 package ru.sergeyabadzhev.weatherappkmp.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import ru.sergeyabadzhev.weatherappkmp.di.HomeViewModelFactory
-import ru.sergeyabadzhev.weatherappkmp.di.SearchViewModelFactory
+import org.koin.androidx.compose.koinViewModel
 import ru.sergeyabadzhev.weatherappkmp.features.home.HomeScreen
 import ru.sergeyabadzhev.weatherappkmp.features.home.HomeViewModel
 import ru.sergeyabadzhev.weatherappkmp.features.search.SearchScreen
@@ -21,9 +18,7 @@ sealed class Screen(val route: String) {
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    val context = LocalContext.current
-
-    val homeViewModel: HomeViewModel = viewModel(factory = HomeViewModelFactory(context))
+    val homeViewModel: HomeViewModel = koinViewModel()
 
     NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(Screen.Home.route) {
@@ -33,9 +28,7 @@ fun AppNavigation() {
             )
         }
         composable(Screen.Search.route) {
-            val searchViewModel: SearchViewModel = viewModel(
-                factory = SearchViewModelFactory(context)
-            )
+            val searchViewModel: SearchViewModel = koinViewModel()
             SearchScreen(
                 viewModel = searchViewModel,
                 onCitySelected = { city ->

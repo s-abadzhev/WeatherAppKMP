@@ -24,6 +24,8 @@ kotlin {
             implementation(libs.androidx.navigation.compose)
             implementation(libs.androidx.datastore)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.koin.android)
+            implementation(libs.koin.androidx.compose)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
