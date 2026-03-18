@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.first
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "location_prefs")
 
-class LocationPreferences(private val context: Context) {
+class LocationPreferences(private val context: Context) : LocationPreferencesInterface {
 
     companion object {
         private val USE_DEVICE_LOCATION = booleanPreferencesKey("use_device_location")
@@ -20,13 +20,13 @@ class LocationPreferences(private val context: Context) {
         private val SAVED_CITY_NAME = androidx.datastore.preferences.core.stringPreferencesKey("saved_city_name")
     }
 
-    suspend fun saveDeviceLocation() {
+    override suspend fun saveDeviceLocation() {
         context.dataStore.edit { prefs ->
             prefs[USE_DEVICE_LOCATION] = true
         }
     }
 
-    suspend fun saveSelectedCity(lat: Double, lon: Double, cityName: String) {
+    override suspend fun saveSelectedCity(lat: Double, lon: Double, cityName: String) {
         context.dataStore.edit { prefs ->
             prefs[USE_DEVICE_LOCATION] = false
             prefs[SAVED_LAT] = lat
@@ -35,7 +35,7 @@ class LocationPreferences(private val context: Context) {
         }
     }
 
-    suspend fun getLastLocation(): LastLocation {
+    override suspend fun getLastLocation(): LastLocation {
         val prefs = context.dataStore.data.first()
         val useDeviceLocation = prefs[USE_DEVICE_LOCATION] ?: true
 
@@ -54,7 +54,3 @@ class LocationPreferences(private val context: Context) {
     }
 }
 
-sealed class LastLocation {
-    data object DeviceLocation : LastLocation()
-    data class SelectedCity(val lat: Double, val lon: Double, val name: String) : LastLocation()
-}

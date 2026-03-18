@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import ru.sergeyabadzhev.weatherappkmp.core.location.LocationError
 import ru.sergeyabadzhev.weatherappkmp.core.location.LocationProvider
 import ru.sergeyabadzhev.weatherappkmp.core.storage.LastLocation
-import ru.sergeyabadzhev.weatherappkmp.core.storage.LocationPreferences
+import ru.sergeyabadzhev.weatherappkmp.core.storage.LocationPreferencesInterface
 import ru.sergeyabadzhev.weatherappkmp.domain.model.City
 import ru.sergeyabadzhev.weatherappkmp.domain.model.Forecast
 import ru.sergeyabadzhev.weatherappkmp.domain.model.HourlyForecast
@@ -25,6 +25,7 @@ enum class HomeError {
     LocationTimeout,
     NetworkError
 }
+
 data class HomeState(
     val weather: Weather? = null,
     val dailyForecast: List<Forecast> = emptyList(),
@@ -39,11 +40,14 @@ data class HomeState(
 class HomeViewModel(
     private val weatherRepository: WeatherRepository,
     private val locationProvider: LocationProvider,
-    private val locationPreferences: LocationPreferences
+    private val locationPreferences: LocationPreferencesInterface
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeState())
     val state: StateFlow<HomeState> = _state
+
+    fun subscribeToState(onState: (HomeState) -> Unit): Job =
+        viewModelScope.launch { state.collect { onState(it) } }
 
     fun onAppear() {
         viewModelScope.launch {

@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew :composeApp:assembleDebug)",
+      "Bash(./gradlew :shared:iosSimulatorArm64MainKlibrary)"
+    ]
+  }
+}

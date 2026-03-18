@@ -22,9 +22,7 @@ struct RootView: View {
                 viewModel: coordinator.searchViewModel
             ) { city in
                 coordinator.selectedCity = city
-                Task {
-                    await coordinator.homeViewModel.loadWeatherForCity(city)
-                }
+                coordinator.homeViewModel.loadWeatherForCity(city)
                 coordinator.isSearchPresented = false
             }
         }

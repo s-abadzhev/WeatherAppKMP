@@ -16,8 +16,8 @@ final class AppCoordinator {
     var selectedCity: City?
     var isSearchPresented = false
 
-    let homeViewModel: HomeViewModel
-    let searchViewModel: SearchViewModel
+    let homeViewModel: HomeViewModelWrapper
+    let searchViewModel: SearchViewModelWrapper
 
     init() {
         let networkClient = NetworkClient()
@@ -27,18 +27,21 @@ final class AppCoordinator {
             networkClient: networkClient,
             cityRepository: cityRepo
         )
-        let locationManager = LocationProvider()
-        let locationPreferences = LocationPreferences()
-        let cityStorage = UserDefaultsCityStorage()
+        let locationProvider = LocationProvider()
+        let locationPrefs = NSUserDefaultsLocationPreferences()
+        let cityStorage = NSUserDefaultsCityStorage()
 
-        self.homeViewModel = HomeViewModel(
+        let homeVM = HomeViewModel(
             weatherRepository: weatherRepo,
-            locationManager: locationManager,
-            locationPreferences: locationPreferences
+            locationProvider: locationProvider,
+            locationPreferences: locationPrefs
         )
-        self.searchViewModel = SearchViewModel(
+        let searchVM = SearchViewModel(
             cityRepository: cityRepo,
-            storage: cityStorage
+            cityStorage: cityStorage
         )
+
+        self.homeViewModel = HomeViewModelWrapper(vm: homeVM)
+        self.searchViewModel = SearchViewModelWrapper(vm: searchVM)
     }
 }

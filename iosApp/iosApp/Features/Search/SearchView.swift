@@ -2,7 +2,7 @@
 //  SearchView.swift
 //  WeatherAppiOS
 //
-//  Created by Sergey Abadzhev on 13.03.26.
+//  Created by Sergey Abadzhev on 18.03.26.
 //
 
 import SwiftUI
@@ -10,7 +10,7 @@ import Shared
 
 struct SearchView: View {
 
-    @State var viewModel: SearchViewModel
+    @State var viewModel: SearchViewModelWrapper
     @Environment(\.dismiss) private var dismiss
     let onCitySelected: (City) -> Void
 

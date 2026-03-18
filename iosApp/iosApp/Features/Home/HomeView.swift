@@ -2,7 +2,7 @@
 //  HomeView.swift
 //  WeatherAppiOS
 //
-//  Created by Sergey Abadzhev on 13.03.26.
+//  Created by Sergey Abadzhev on 18.03.26.
 //
 
 import SwiftUI
@@ -10,7 +10,7 @@ import Shared
 
 struct HomeView: View {
 
-    @State var viewModel: HomeViewModel
+    @State var viewModel: HomeViewModelWrapper
     let selectedCity: City?
 
     @Environment(AppCoordinator.self) private var coordinator
@@ -24,7 +24,7 @@ struct HomeView: View {
                     LoadingView()
                 } else if let error = viewModel.error {
                     ErrorView(message: error) {
-                        Task { await viewModel.loadWeatherForCurrentLocation() }
+                        viewModel.loadWeatherForCurrentLocation()
                     }
                 } else if let weather = viewModel.weather {
                     WeatherContentView(
@@ -41,7 +41,7 @@ struct HomeView: View {
                     HStack(spacing: 4) {
                         if !viewModel.isUsingDeviceLocation {
                             Button {
-                                Task { await viewModel.switchToDeviceLocation() }
+                                viewModel.switchToDeviceLocation()
                             } label: {
                                 Image(systemName: "location.fill")
                                     .font(.system(size: 18, weight: .medium))
@@ -69,11 +69,11 @@ struct HomeView: View {
             }
         }
         .task {
-            await viewModel.onAppear()
+            viewModel.onAppear()
         }
         .onChange(of: selectedCity) { _, new in
             guard let new else { return }
-            Task { await viewModel.loadWeatherForCity(new) }
+            viewModel.loadWeatherForCity(new)
         }
     }
 }

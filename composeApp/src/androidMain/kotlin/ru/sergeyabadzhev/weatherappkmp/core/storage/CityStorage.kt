@@ -14,13 +14,13 @@ import kotlinx.serialization.json.Json
 
 private val Context.cityDataStore: DataStore<Preferences> by preferencesDataStore(name = "city_prefs")
 
-class CityStorage(private val context: Context) {
+class CityStorage(private val context: Context) : CityStorageInterface {
 
     companion object {
         private val SAVED_CITIES = stringPreferencesKey("saved_cities")
     }
 
-    val savedCities: Flow<List<City>> = context.cityDataStore.data.map { prefs ->
+    override val savedCities: Flow<List<City>> = context.cityDataStore.data.map { prefs ->
         val json = prefs[SAVED_CITIES] ?: return@map emptyList()
         try {
             Json.decodeFromString<List<CityStorageDTO>>(json).map { it.toDomain() }
@@ -29,7 +29,7 @@ class CityStorage(private val context: Context) {
         }
     }
 
-    suspend fun saveCity(city: City) {
+    override suspend fun saveCity(city: City) {
         context.cityDataStore.edit { prefs ->
             val current = prefs[SAVED_CITIES]?.let {
                 Json.decodeFromString<List<CityStorageDTO>>(it)
@@ -42,7 +42,7 @@ class CityStorage(private val context: Context) {
         }
     }
 
-    suspend fun removeCity(city: City) {
+    override suspend fun removeCity(city: City) {
         context.cityDataStore.edit { prefs ->
             val current = prefs[SAVED_CITIES]?.let {
                 Json.decodeFromString<List<CityStorageDTO>>(it)

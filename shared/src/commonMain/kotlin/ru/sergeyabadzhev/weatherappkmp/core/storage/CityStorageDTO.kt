@@ -1,8 +1,9 @@
 package ru.sergeyabadzhev.weatherappkmp.core.storage
 
+import kotlinx.serialization.Serializable
 import ru.sergeyabadzhev.weatherappkmp.domain.model.City
 
-@kotlinx.serialization.Serializable
+@Serializable
 data class CityStorageDTO(
     val id: String,
     val name: String,

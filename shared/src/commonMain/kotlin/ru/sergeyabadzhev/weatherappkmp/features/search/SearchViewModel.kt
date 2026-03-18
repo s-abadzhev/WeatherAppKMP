@@ -8,10 +8,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ru.sergeyabadzhev.weatherappkmp.core.storage.CityStorage
+import ru.sergeyabadzhev.weatherappkmp.core.storage.CityStorageInterface
 import ru.sergeyabadzhev.weatherappkmp.domain.model.City
 import ru.sergeyabadzhev.weatherappkmp.domain.repository.CityRepository
-import kotlin.collections.emptyList
 
 data class SearchState(
     val query: String = "",
@@ -23,13 +22,16 @@ data class SearchState(
 
 class SearchViewModel(
     private val cityRepository: CityRepository,
-    private val cityStorage: CityStorage
+    private val cityStorage: CityStorageInterface
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SearchState())
     val state: StateFlow<SearchState> = _state
 
     private var searchJob: Job? = null
+
+    fun subscribeToState(onState: (SearchState) -> Unit): Job =
+        viewModelScope.launch { state.collect { onState(it) } }
 
     init {
         viewModelScope.launch {
