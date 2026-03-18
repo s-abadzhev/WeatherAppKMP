@@ -13,8 +13,8 @@ import Shared
 @Observable
 final class AppCoordinator {
 
-    var selectedCity: City?
     var isSearchPresented = false
+    var selectedCity: City?
 
     let homeViewModel: HomeViewModelWrapper
     let searchViewModel: SearchViewModelWrapper

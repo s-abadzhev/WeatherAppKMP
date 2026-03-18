@@ -76,6 +76,7 @@ class HomeViewModel(
     }
 
     private var locationJob: Job? = null
+    private var lastCoordinates: Pair<Double, Double>? = null
 
     fun onLocationPermissionGranted() {
         _state.update { it.copy(needsLocationUpdate = false) }
@@ -129,6 +130,18 @@ class HomeViewModel(
         }
     }
 
+    fun retry() {
+        if (_state.value.isUsingDeviceLocation) {
+            switchToDeviceLocation()
+        } else {
+            val coords = lastCoordinates ?: return
+            viewModelScope.launch {
+                _state.update { it.copy(isLoading = true, error = null) }
+                loadWeather(coords.first, coords.second)
+            }
+        }
+    }
+
     fun switchToDeviceLocation() {
         locationJob?.cancel()
         _state.update {
@@ -146,6 +159,7 @@ class HomeViewModel(
     }
 
     private suspend fun loadWeather(lat: Double, lon: Double) {
+        lastCoordinates = lat to lon
         try {
             val weatherDeferred = viewModelScope.async { weatherRepository.fetchCurrentWeather(lat, lon) }
             val forecastDeferred = viewModelScope.async { weatherRepository.fetchForecast(lat, lon) }
@@ -162,6 +176,8 @@ class HomeViewModel(
                     error = null
                 )
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             _state.update { it.copy(isLoading = false, error = HomeError.NetworkError) }
         }

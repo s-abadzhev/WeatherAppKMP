@@ -11,7 +11,7 @@ import kotlinx.serialization.json.Json
 
 class NetworkClient {
 
-    val client = HttpClient {
+    @PublishedApi internal val client = HttpClient {
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true
@@ -19,7 +19,7 @@ class NetworkClient {
             })
         }
         install(Logging) {
-            level = LogLevel.BODY
+            level = if (isDebugBuild) LogLevel.BODY else LogLevel.NONE
         }
     }
 
@@ -31,7 +31,7 @@ class NetworkClient {
         }
     }
 
-    fun mapException(e: Exception): NetworkError {
+    @PublishedApi internal fun mapException(e: Exception): NetworkError {
         return when {
             e.message?.contains("Unable to resolve host") == true -> NetworkError.NoInternetConnection()
             e.message?.contains("timeout") == true -> NetworkError.Timeout()

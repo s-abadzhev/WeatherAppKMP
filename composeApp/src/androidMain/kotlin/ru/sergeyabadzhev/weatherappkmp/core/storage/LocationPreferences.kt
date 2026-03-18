@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.first
 
@@ -17,7 +18,7 @@ class LocationPreferences(private val context: Context) : LocationPreferencesInt
         private val USE_DEVICE_LOCATION = booleanPreferencesKey("use_device_location")
         private val SAVED_LAT = doublePreferencesKey("saved_lat")
         private val SAVED_LON = doublePreferencesKey("saved_lon")
-        private val SAVED_CITY_NAME = androidx.datastore.preferences.core.stringPreferencesKey("saved_city_name")
+        private val SAVED_CITY_NAME = stringPreferencesKey("saved_city_name")
     }
 
     override suspend fun saveDeviceLocation() {

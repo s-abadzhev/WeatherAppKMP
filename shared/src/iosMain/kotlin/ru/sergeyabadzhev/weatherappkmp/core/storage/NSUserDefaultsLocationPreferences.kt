@@ -25,9 +25,7 @@ class NSUserDefaultsLocationPreferences : LocationPreferencesInterface {
 
     override suspend fun getLastLocation(): LastLocation {
         val defaults = NSUserDefaults.standardUserDefaults
-        val useDevice = defaults.boolForKey(KEY_USE_DEVICE).let {
-            if (!defaults.objectForKey(KEY_USE_DEVICE).let { obj -> obj != null }) true else it
-        }
+        val useDevice = defaults.objectForKey(KEY_USE_DEVICE) == null || defaults.boolForKey(KEY_USE_DEVICE)
         if (useDevice) return LastLocation.DeviceLocation
 
         val lat = defaults.doubleForKey(KEY_LAT)

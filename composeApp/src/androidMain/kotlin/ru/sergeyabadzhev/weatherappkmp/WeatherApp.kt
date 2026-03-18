@@ -6,6 +6,7 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import ru.sergeyabadzhev.weatherappkmp.di.androidModule
 import ru.sergeyabadzhev.weatherappkmp.di.sharedModule
+import ru.sergeyabadzhev.weatherappkmp.shared.BuildConfig
 
 class WeatherApp : Application() {
     override fun onCreate() {
@@ -14,8 +15,7 @@ class WeatherApp : Application() {
         startKoin {
             modules(sharedModule, androidModule)
             androidContext(this@WeatherApp)
-            androidLogger()
-            androidContext(applicationContext)
+            if (BuildConfig.DEBUG) androidLogger()
         }
     }
 }

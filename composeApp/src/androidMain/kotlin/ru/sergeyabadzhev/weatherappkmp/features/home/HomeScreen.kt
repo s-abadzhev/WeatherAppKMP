@@ -47,9 +47,6 @@ import ru.sergeyabadzhev.weatherappkmp.domain.model.WeatherCondition
 import ru.sergeyabadzhev.weatherappkmp.ui.components.GlassCard
 import ru.sergeyabadzhev.weatherappkmp.ui.extensions.emoji
 import ru.sergeyabadzhev.weatherappkmp.ui.extensions.formattedHour
-import ru.sergeyabadzhev.weatherappkmp.ui.extensions.formattedUV
-import ru.sergeyabadzhev.weatherappkmp.ui.extensions.formattedVisibility
-import ru.sergeyabadzhev.weatherappkmp.ui.extensions.formattedWeekday
 import ru.sergeyabadzhev.weatherappkmp.ui.extensions.localizedWeekday
 import ru.sergeyabadzhev.weatherappkmp.ui.resources.localizedMessage
 import ru.sergeyabadzhev.weatherappkmp.ui.resources.localizedTitle
@@ -114,13 +111,7 @@ fun HomeScreen(
             state.isLoading -> LoadingView()
             state.error != null -> ErrorView(
                 message = state.error!!.localizedMessage(),
-                onRetry = {
-                    if (state.isUsingDeviceLocation) {
-                        viewModel.switchToDeviceLocation()
-                    } else {
-                        viewModel.onAppear()
-                    }
-                }
+                onRetry = { viewModel.retry() }
             )
             state.weather != null -> WeatherContentView(
                 weather = state.weather!!,

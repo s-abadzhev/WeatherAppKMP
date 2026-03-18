@@ -9,7 +9,6 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ru.sergeyabadzhev.weatherappkmp.domain.model.City
-import kotlin.collections.emptyList
 import kotlinx.serialization.json.Json
 
 private val Context.cityDataStore: DataStore<Preferences> by preferencesDataStore(name = "city_prefs")

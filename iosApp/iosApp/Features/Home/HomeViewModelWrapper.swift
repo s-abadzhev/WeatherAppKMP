@@ -61,4 +61,8 @@ final class HomeViewModelWrapper {
     func switchToDeviceLocation() {
         vm.switchToDeviceLocation()
     }
+
+    func retry() {
+        vm.retry()
+    }
 }
