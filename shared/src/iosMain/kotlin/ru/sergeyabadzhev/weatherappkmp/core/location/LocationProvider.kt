@@ -3,7 +3,9 @@ package ru.sergeyabadzhev.weatherappkmp.core.location
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withTimeout
 import platform.CoreLocation.CLLocation
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
@@ -17,33 +19,40 @@ import kotlin.coroutines.resumeWithException
 
 actual class LocationProvider : LocationProviderInterface {
 
+    val manager = CLLocationManager()
+
     @OptIn(ExperimentalForeignApi::class)
     @Throws(LocationError::class, CancellationException::class)
     actual override suspend fun getCurrentLocation(): Coordinates {
-        return suspendCancellableCoroutine { continuation ->
-            val delegate = LocationDelegate(
-                onLocation = { location ->
-                    continuation.resume(
-                        Coordinates(
-                            latitude = location.coordinate.useContents { latitude },
-                            longitude = location.coordinate.useContents { longitude }
-                        )
+        try {
+            return withTimeout(10_000) {
+                suspendCancellableCoroutine { continuation ->
+                    val delegate = LocationDelegate(
+                        onLocation = { location ->
+                            continuation.resume(
+                                Coordinates(
+                                    latitude = location.coordinate.useContents { latitude },
+                                    longitude = location.coordinate.useContents { longitude }
+                                )
+                            )
+                        },
+                        onError = { error ->
+                            continuation.resumeWithException(error)
+                        }
                     )
-                },
-                onError = { error ->
-                    continuation.resumeWithException(error)
+
+                    manager.delegate = delegate
+                    manager.desiredAccuracy = kCLLocationAccuracyKilometer
+                    manager.requestWhenInUseAuthorization()
+                    manager.requestLocation()
+
+                    continuation.invokeOnCancellation {
+                        manager.stopUpdatingLocation()
+                    }
                 }
-            )
-
-            val manager = CLLocationManager()
-            manager.delegate = delegate
-            manager.desiredAccuracy = kCLLocationAccuracyKilometer
-            manager.requestWhenInUseAuthorization()
-            manager.requestLocation()
-
-            continuation.invokeOnCancellation {
-                manager.stopUpdatingLocation()
             }
+        } catch (e: TimeoutCancellationException) {
+            throw LocationError.Timeout()
         }
     }
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -32,7 +33,6 @@ data class HomeState(
     val hourlyForecast: List<HourlyForecast> = emptyList(),
     val isLoading: Boolean = false,
     val error: HomeError? = null,
-    val errorMessage: String? = null,
     val isUsingDeviceLocation: Boolean = true,
     val needsLocationUpdate: Boolean = false
 )
@@ -161,20 +161,22 @@ class HomeViewModel(
     private suspend fun loadWeather(lat: Double, lon: Double) {
         lastCoordinates = lat to lon
         try {
-            val weatherDeferred = viewModelScope.async { weatherRepository.fetchCurrentWeather(lat, lon) }
-            val forecastDeferred = viewModelScope.async { weatherRepository.fetchForecast(lat, lon) }
+            coroutineScope {
+                val weatherDeferred = async { weatherRepository.fetchCurrentWeather(lat, lon) }
+                val forecastDeferred = async { weatherRepository.fetchForecast(lat, lon) }
 
-            val weather = weatherDeferred.await()
-            val (daily, hourly) = forecastDeferred.await()
+                val weather = weatherDeferred.await()
+                val (daily, hourly) = forecastDeferred.await()
 
-            _state.update {
-                it.copy(
-                    weather = weather,
-                    dailyForecast = daily,
-                    hourlyForecast = hourly,
-                    isLoading = false,
-                    error = null
-                )
+                _state.update {
+                    it.copy(
+                        weather = weather,
+                        dailyForecast = daily,
+                        hourlyForecast = hourly,
+                        isLoading = false,
+                        error = null
+                    )
+                }
             }
         } catch (e: CancellationException) {
             throw e

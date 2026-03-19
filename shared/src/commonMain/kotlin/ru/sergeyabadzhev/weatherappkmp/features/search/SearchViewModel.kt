@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -61,6 +62,8 @@ class SearchViewModel(
         try {
             val results = cityRepository.searchCity(query)
             _state.update { it.copy(results = results, isLoading = false) }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             _state.update { it.copy(error = e.message, isLoading = false, results = emptyList()) }
         }

@@ -325,4 +325,99 @@ class HomeViewModelTest {
         assertEquals(HomeError.NetworkError, vm.state.value.error)
         assertFalse(vm.state.value.isLoading)
     }
+
+    // ---- retry ----
+
+    @Test
+    fun `retry with device location sets needsLocationUpdate true`() = runTest(testDispatcher) {
+        val vm = createViewModel()
+        vm.onLocationPermissionGranted()
+        advanceUntilIdle()
+        assertTrue(vm.state.value.isUsingDeviceLocation)
+
+        vm.retry()
+        advanceUntilIdle()
+
+        assertTrue(vm.state.value.needsLocationUpdate)
+    }
+
+    @Test
+    fun `retry with device location clears weather and error`() = runTest(testDispatcher) {
+        val vm = createViewModel()
+        vm.onLocationPermissionGranted()
+        advanceUntilIdle()
+        assertNotNull(vm.state.value.weather)
+
+        vm.retry()
+        advanceUntilIdle()
+
+        assertNull(vm.state.value.weather)
+        assertNull(vm.state.value.error)
+    }
+
+    @Test
+    fun `retry with city uses same coordinates without reading preferences`() = runTest(testDispatcher) {
+        val city = City(id = "city-1", name = "Berlin", country = "Germany", latitude = 52.52, longitude = 13.40)
+        val vm = createViewModel()
+        vm.loadWeatherForCity(city)
+        advanceUntilIdle()
+
+        // Change preferences — retry must NOT re-read them
+        locationPreferences.saveSelectedCity(0.0, 0.0, "Wrong City")
+        weatherRepository.lastFetchedLat = null
+        weatherRepository.lastFetchedLon = null
+
+        vm.retry()
+        advanceUntilIdle()
+
+        assertEquals(52.52, weatherRepository.lastFetchedLat)
+        assertEquals(13.40, weatherRepository.lastFetchedLon)
+    }
+
+    @Test
+    fun `retry with city clears error and restores weather on success`() = runTest(testDispatcher) {
+        val city = City(id = "city-1", name = "Berlin", country = "Germany", latitude = 52.52, longitude = 13.40)
+        val vm = createViewModel()
+
+        weatherRepository.weatherResult = Result.failure(RuntimeException("Network error"))
+        vm.loadWeatherForCity(city)
+        advanceUntilIdle()
+        assertEquals(HomeError.NetworkError, vm.state.value.error)
+
+        weatherRepository.weatherResult = Result.success(FakeWeatherRepository.defaultWeather())
+        vm.retry()
+        advanceUntilIdle()
+
+        assertNull(vm.state.value.error)
+        assertNotNull(vm.state.value.weather)
+        assertFalse(vm.state.value.isLoading)
+    }
+
+    @Test
+    fun `retry with city increments fetch call count`() = runTest(testDispatcher) {
+        val city = City(id = "city-1", name = "Berlin", country = "Germany", latitude = 52.52, longitude = 13.40)
+        val vm = createViewModel()
+        vm.loadWeatherForCity(city)
+        advanceUntilIdle()
+        val callsBefore = weatherRepository.fetchWeatherCallCount
+
+        vm.retry()
+        advanceUntilIdle()
+
+        assertEquals(callsBefore + 1, weatherRepository.fetchWeatherCallCount)
+    }
+
+    @Test
+    fun `retry with city does not set needsLocationUpdate`() = runTest(testDispatcher) {
+        val city = City(id = "city-1", name = "Berlin", country = "Germany", latitude = 52.52, longitude = 13.40)
+        val vm = createViewModel()
+        vm.loadWeatherForCity(city)
+        advanceUntilIdle()
+
+        vm.retry()
+        advanceUntilIdle()
+
+        assertFalse(vm.state.value.needsLocationUpdate)
+        assertFalse(vm.state.value.isUsingDeviceLocation)
+    }
 }
