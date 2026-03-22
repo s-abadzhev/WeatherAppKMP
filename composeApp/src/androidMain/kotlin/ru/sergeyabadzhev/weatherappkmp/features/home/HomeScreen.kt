@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
@@ -377,7 +378,8 @@ private fun ErrorView(message: String, onRetry: () -> Unit) {
             Text(
                 text = message,
                 color = Color.White.copy(alpha = 0.7f),
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                textAlign = TextAlign.Center
             )
             Button(onClick = onRetry) {
                 Text(stringResource(R.string.error_retry))

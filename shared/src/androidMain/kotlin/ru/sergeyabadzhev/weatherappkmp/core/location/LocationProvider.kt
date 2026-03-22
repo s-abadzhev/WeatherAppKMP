@@ -2,8 +2,8 @@ package ru.sergeyabadzhev.weatherappkmp.core.location
 
 import android.annotation.SuppressLint
 import android.content.Context
-import com.google.android.gms.location.Priority.PRIORITY_BALANCED_POWER_ACCURACY
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.google.android.gms.tasks.CancellationTokenSource
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -54,7 +54,7 @@ actual class LocationProvider(private val context: Context) : LocationProviderIn
             val cancellationTokenSource = CancellationTokenSource()
 
             fusedLocationClient
-                .getCurrentLocation(PRIORITY_BALANCED_POWER_ACCURACY, cancellationTokenSource.token)
+                .getCurrentLocation(PRIORITY_HIGH_ACCURACY, cancellationTokenSource.token)
                 .addOnSuccessListener { location ->
                     if (location != null) {
                         continuation.resume(Coordinates(location.latitude, location.longitude))
